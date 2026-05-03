@@ -367,7 +367,7 @@
 
 <!-- Header -->
 <header>
-  <div class="logo">Anh <span>Duong<span> Menu</span></div>
+  <div class="logo">Quán <span>Ngon</span></div>
   <button class="owner-btn" id="ownerToggleBtn" onclick="handleOwnerBtn()">
     <div class="dot"></div>
     <span id="ownerBtnLabel">Chủ quán</span>
@@ -397,8 +397,8 @@
 <!-- Footer -->
 <footer>
   <div>☕ 🫐 🍊</div>
-  <div>Anh Duong · SDT: 0919 258 801 </div>
-  <div style="margin-top:4px;font-size:11px;">© Anh Duong. All rights reserved.</div>
+  <div>Quán Ngon · Mở cửa 7:00 – 22:00 hàng ngày</div>
+  <div style="margin-top:4px;font-size:11px;">© 2025 Quán Ngon. All rights reserved.</div>
 </footer>
 
 <!-- Login Modal -->
@@ -422,6 +422,7 @@
       <button class="btn-secondary" onclick="closeLogin()">Huỷ</button>
       <button class="btn-primary" onclick="doLogin()">Đăng nhập →</button>
     </div>
+    <div class="login-hint">Mật khẩu mặc định: <strong>owner123</strong><br>Đổi trong file HTML dòng <code>OWNER_PASSWORD</code></div>
   </div>
 </div>
 
@@ -461,56 +462,156 @@
   </div>
 </div>
 
-<script>
+<script type="module">
 // ── Touch device detection ──
 const isTouchDevice = () => window.matchMedia('(hover: none)').matches || 'ontouchstart' in window;
 if (isTouchDevice()) document.body.classList.add('is-touch');
 
-// ── CONFIG: Change your password here ──
-const OWNER_PASSWORD = '23012021';
+// ── CONFIG ──
+const OWNER_PASSWORD = 'owner123';
 
-// ── State ──
-let isOwner = false;
-let activeTab = 'sinhto';
-let editingId = null;
-let nextId = 50;
+// ─────────────────────────────────────────────
+// Firebase config — shared real-time database
+// HOW TO SET UP YOUR OWN (free, 5 minutes):
+//   1. Go to https://console.firebase.google.com
+//   2. Create project → Firestore Database → Start in test mode
+//   3. Project settings → Your apps → Web app → copy firebaseConfig
+//   4. Replace the config object below with yours
+// ─────────────────────────────────────────────
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+import { getFirestore, doc, getDoc, setDoc, onSnapshot } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
 
-// ── Data ──
+<script type="module">
+  // Import the functions you need from the SDKs you need
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
+  import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-analytics.js";
+  // TODO: Add SDKs for Firebase products that you want to use
+  // https://firebase.google.com/docs/web/setup#available-libraries
+
+  // Your web app's Firebase configuration
+  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+  const firebaseConfig = {
+    apiKey: "AIzaSyAHgg7kLRPNqPcRNQRYE7hx_S8nDrRwjWw",
+    authDomain: "menucafe-e7461.firebaseapp.com",
+    projectId: "menucafe-e7461",
+    storageBucket: "menucafe-e7461.firebasestorage.app",
+    messagingSenderId: "34461571288",
+    appId: "1:34461571288:web:2828e316b45a51309a1fad",
+    measurementId: "G-JQ85P4925F"
+  };
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const analytics = getAnalytics(app);
+</script>
+
+// ── Default menu (used only on first ever load) ──
+const DEFAULT_MENU = {
+  nextId: 50,
+  sinhto: [
+    { id:1, name:'Sinh tố dâu tây',  desc:'Dâu tây tươi, sữa tươi, đá xay',       price:35000, emoji:'🍓' },
+    { id:2, name:'Sinh tố xoài',     desc:'Xoài chín, sữa chua, mật ong',          price:32000, emoji:'🥭' },
+    { id:3, name:'Sinh tố bơ',       desc:'Bơ béo, sữa đặc, đá xay',              price:38000, emoji:'🥑' },
+    { id:4, name:'Sinh tố dưa hấu',  desc:'Dưa hấu mát lạnh, không đường',         price:28000, emoji:'🍉' },
+  ],
+  cafe: [
+    { id:5, name:'Cà phê sữa đá',   desc:'Phin truyền thống, sữa đặc nguyên chất', price:25000, emoji:'🧋' },
+    { id:6, name:'Bạc xỉu',         desc:'Sữa nhiều, cà phê nhẹ, thơm mịn',        price:27000, emoji:'🍼' },
+    { id:7, name:'Cà phê đen',      desc:'Đậm vị, nguyên chất 100%',               price:20000, emoji:'☕' },
+  ],
+  nuocep: [
+    { id:8,  name:'Nước ép cam',       desc:'Cam sành tươi, vắt tại chỗ',            price:30000, emoji:'🍊' },
+    { id:9,  name:'Nước ép dưa leo',   desc:'Dưa leo mát, thêm gừng tươi',           price:28000, emoji:'🥒' },
+    { id:10, name:'Nước ép cà rốt táo',desc:'Cà rốt + táo xanh, bổ dưỡng',          price:32000, emoji:'🥕' },
+  ]
+};
+
 const CATS = [
   { id: 'sinhto', label: 'Sinh tố',  emoji: '🫐', desc: 'Sinh tố tươi nguyên chất mỗi ngày' },
   { id: 'cafe',   label: 'Cà phê',   emoji: '☕', desc: 'Cà phê rang xay tại chỗ' },
   { id: 'nuocep', label: 'Nước ép',  emoji: '🍊', desc: 'Nước ép trái cây tươi 100%' },
 ];
 
-let menu = {
-  sinhto: [
-    { id:1, name:'Sinh tố dâu tây',  desc:'Dâu tây tươi, sữa tươi, đá xay',      price:35000, emoji:'🍓' },
-    { id:2, name:'Sinh tố xoài',     desc:'Xoài chín, sữa chua, mật ong',         price:32000, emoji:'🥭' },
-    { id:3, name:'Sinh tố bơ',       desc:'Bơ béo, sữa đặc, đá xay',             price:38000, emoji:'🥑' },
-    { id:4, name:'Sinh tố dưa hấu',  desc:'Dưa hấu mát lạnh, không đường',        price:28000, emoji:'🍉' },
-  ],
-  cafe: [
-    { id:5, name:'Cà phê sữa đá',   desc:'Phin truyền thống, sữa đặc nguyên chất',price:25000, emoji:'🧋' },
-    { id:6, name:'Bạc xỉu',         desc:'Sữa nhiều, cà phê nhẹ, thơm mịn',       price:27000, emoji:'🍼' },
-    { id:7, name:'Cà phê đen',      desc:'Đậm vị, nguyên chất 100%',              price:20000, emoji:'☕' },
-  ],
-  nuocep: [
-    { id:8,  name:'Nước ép cam',      desc:'Cam sành tươi, vắt tại chỗ',            price:30000, emoji:'🍊' },
-    { id:9,  name:'Nước ép dưa leo',  desc:'Dưa leo mát, thêm gừng tươi',           price:28000, emoji:'🥒' },
-    { id:10, name:'Nước ép cà rốt táo', desc:'Cà rốt + táo xanh, bổ dưỡng',        price:32000, emoji:'🥕' },
-  ]
-};
+// ── State ──
+let isOwner = false;
+let activeTab = 'sinhto';
+let editingId = null;
+let menu = JSON.parse(JSON.stringify(DEFAULT_MENU));
+let db, menuDocRef;
+let usingFirebase = false;
+
+// ── Firebase init ──
+async function initFirebase() {
+  try {
+    if (firebaseConfig.apiKey === 'AIzaSyDemo-ReplaceWithYours') {
+      throw new Error('demo');
+    }
+    const app = initializeApp(firebaseConfig);
+    db = getFirestore(app);
+    menuDocRef = doc(db, 'quannuoc', 'menu');
+
+    // Load once first
+    const snap = await getDoc(menuDocRef);
+    if (snap.exists()) {
+      menu = snap.data();
+    } else {
+      await setDoc(menuDocRef, DEFAULT_MENU);
+    }
+    usingFirebase = true;
+
+    // Live updates — all users see changes instantly
+    onSnapshot(menuDocRef, (snap) => {
+      if (snap.exists()) {
+        menu = snap.data();
+        render();
+      }
+    });
+
+    hideSaveStatus();
+  } catch (e) {
+    // Fallback to localStorage if Firebase not configured
+    usingFirebase = false;
+    const saved = localStorage.getItem('quannuoc_menu');
+    if (saved) menu = JSON.parse(saved);
+    showSaveStatus(e.message === 'demo');
+  }
+  render();
+}
+
+async function persistMenu() {
+  if (usingFirebase) {
+    try {
+      await setDoc(menuDocRef, menu);
+    } catch(e) { console.error('Save failed', e); }
+  } else {
+    localStorage.setItem('quannuoc_menu', JSON.stringify(menu));
+  }
+}
+
+function showSaveStatus(isDemo) {
+  let bar = document.getElementById('saveStatusBar');
+  if (!bar) {
+    bar = document.createElement('div');
+    bar.id = 'saveStatusBar';
+    bar.style.cssText = 'background:#fff3cd;border-bottom:0.5px solid #e8c84a;padding:.5rem 1.5rem;font-size:12px;color:#856404;font-family:Be Vietnam Pro,sans-serif;display:flex;align-items:center;gap:8px;';
+    document.body.insertBefore(bar, document.body.children[1]);
+  }
+  if (isDemo) {
+    bar.innerHTML = '⚠️ <span>Đang dùng chế độ <b>lưu cục bộ</b> (chỉ thiết bị này). Để lưu dùng chung, hãy cài Firebase — xem hướng dẫn trong file HTML.</span>';
+  } else {
+    bar.innerHTML = '⚠️ <span>Không kết nối được Firebase. Đang lưu tạm trên thiết bị này.</span>';
+  }
+}
+
+function hideSaveStatus() {
+  const bar = document.getElementById('saveStatusBar');
+  if (bar) bar.remove();
+}
 
 // ── Helpers ──
-function fmt(p) { return p.toLocaleString('vi-VN'); }
-
-function allItems() {
-  return [...menu.sinhto, ...menu.cafe, ...menu.nuocep];
-}
-
-function catOf(id) {
-  return Object.keys(menu).find(k => menu[k].some(i => i.id === id));
-}
+function fmt(p) { return Number(p).toLocaleString('vi-VN'); }
+function allItems() { return [...(menu.sinhto||[]), ...(menu.cafe||[]), ...(menu.nuocep||[])]; }
+function catOf(id) { return Object.keys(menu).find(k => Array.isArray(menu[k]) && menu[k].some(i => i.id === id)); }
 
 // ── Render ──
 function render() {
@@ -521,7 +622,7 @@ function render() {
 
 function renderTabs() {
   document.getElementById('tabs').innerHTML = CATS.map(c =>
-    `<button class="tab${c.id === activeTab ? ' active' : ''}" onclick="setTab('${c.id}')">
+    `<button class="tab${c.id === activeTab ? ' active' : ''}" onclick="window._setTab('${c.id}')">
       ${c.emoji} ${c.label}
     </button>`
   ).join('');
@@ -529,7 +630,7 @@ function renderTabs() {
 
 function renderContent() {
   const cat = CATS.find(c => c.id === activeTab);
-  const items = menu[activeTab];
+  const items = menu[activeTab] || [];
   document.getElementById('content').innerHTML = `
     <div class="section-header">
       <div class="section-info">
@@ -542,8 +643,8 @@ function renderContent() {
       ${items.map((item, i) => `
         <div class="item-card" style="animation-delay:${i * 40}ms">
           <div class="card-actions">
-            <button class="card-action-btn" onclick="openEdit(${item.id})" title="Chỉnh sửa">✎</button>
-            <button class="card-action-btn danger" onclick="delItem(${item.id})" title="Xoá">✕</button>
+            <button class="card-action-btn" onclick="window._openEdit(${item.id})" title="Chỉnh sửa">✎</button>
+            <button class="card-action-btn danger" onclick="window._delItem(${item.id})" title="Xoá">✕</button>
           </div>
           <span class="item-emoji">${item.emoji}</span>
           <div class="item-name">${item.name}</div>
@@ -552,20 +653,14 @@ function renderContent() {
         </div>
       `).join('')}
     </div>
-    <button class="add-btn" onclick="openAdd()">+ Thêm món mới vào danh mục này</button>
+    <button class="add-btn" onclick="window._openAdd()">+ Thêm món mới vào danh mục này</button>
   `;
 }
 
 function setTab(id) { activeTab = id; render(); }
 
 // ── Owner auth ──
-function handleOwnerBtn() {
-  if (isOwner) {
-    logout();
-  } else {
-    openLogin();
-  }
-}
+function handleOwnerBtn() { isOwner ? logout() : openLogin(); }
 
 function openLogin() {
   document.getElementById('pwInput').value = '';
@@ -573,18 +668,14 @@ function openLogin() {
   document.getElementById('loginModal').classList.add('open');
   setTimeout(() => document.getElementById('pwInput').focus(), 100);
 }
-
-function closeLogin() {
-  document.getElementById('loginModal').classList.remove('open');
-}
+function closeLogin() { document.getElementById('loginModal').classList.remove('open'); }
 
 function doLogin() {
   const pw = document.getElementById('pwInput').value;
   if (pw === OWNER_PASSWORD) {
     isOwner = true;
     closeLogin();
-    const short = window.innerWidth < 420;
-    document.getElementById('ownerBtnLabel').textContent = short ? 'Đăng xuất' : 'Đăng xuất';
+    document.getElementById('ownerBtnLabel').textContent = 'Đăng xuất';
     document.getElementById('ownerToggleBtn').classList.add('active');
     document.getElementById('ownerBanner').classList.add('show');
     if (isTouchDevice()) document.body.classList.add('is-touch');
@@ -622,9 +713,7 @@ function openAdd() {
   editingId = null;
   document.getElementById('itemModalTitle').textContent = 'Thêm món mới';
   populateCatSelect(activeTab);
-  document.getElementById('f-name').value = '';
-  document.getElementById('f-desc').value = '';
-  document.getElementById('f-price').value = '';
+  ['f-name','f-desc','f-price'].forEach(id => document.getElementById(id).value = '');
   document.getElementById('f-emoji').value = '🥤';
   document.getElementById('itemModal').classList.add('open');
   setTimeout(() => document.getElementById('f-name').focus(), 100);
@@ -645,11 +734,9 @@ function openEdit(id) {
   setTimeout(() => document.getElementById('f-name').focus(), 100);
 }
 
-function closeItemModal() {
-  document.getElementById('itemModal').classList.remove('open');
-}
+function closeItemModal() { document.getElementById('itemModal').classList.remove('open'); }
 
-function saveItem() {
+async function saveItem() {
   if (!isOwner) return;
   const cat   = document.getElementById('f-cat').value;
   const name  = document.getElementById('f-name').value.trim();
@@ -665,37 +752,45 @@ function saveItem() {
     menu[cat].push({ id: editingId, name, desc, price, emoji });
     activeTab = cat;
   } else {
-    menu[cat].push({ id: nextId++, name, desc, price, emoji });
+    const newId = (menu.nextId || 50);
+    menu.nextId = newId + 1;
+    menu[cat].push({ id: newId, name, desc, price, emoji });
     activeTab = cat;
   }
   closeItemModal();
+  await persistMenu();
   render();
 }
 
-function delItem(id) {
+async function delItem(id) {
   if (!isOwner) return;
   const item = allItems().find(i => i.id === id);
   if (!confirm(`Xoá "${item.name}" khỏi thực đơn?`)) return;
   const cat = catOf(id);
   menu[cat] = menu[cat].filter(i => i.id !== id);
+  await persistMenu();
   render();
 }
 
-// Close modals on bg click
-document.getElementById('loginModal').addEventListener('click', function(e) {
-  if (e.target === this) closeLogin();
-});
-document.getElementById('itemModal').addEventListener('click', function(e) {
-  if (e.target === this) closeItemModal();
-});
+// ── Expose to inline onclick handlers ──
+window._setTab    = setTab;
+window._openAdd   = openAdd;
+window._openEdit  = openEdit;
+window._delItem   = delItem;
+window.handleOwnerBtn  = handleOwnerBtn;
+window.doLogin         = doLogin;
+window.closeLogin      = closeLogin;
+window.closeItemModal  = closeItemModal;
+window.saveItem        = saveItem;
+window.togglePw        = togglePw;
 
-// Close on Escape
-document.addEventListener('keydown', function(e) {
-  if (e.key === 'Escape') { closeLogin(); closeItemModal(); }
-});
+// Close modals on bg click
+document.getElementById('loginModal').addEventListener('click', function(e) { if (e.target === this) closeLogin(); });
+document.getElementById('itemModal').addEventListener('click',  function(e) { if (e.target === this) closeItemModal(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeLogin(); closeItemModal(); } });
 
 // ── Init ──
-render();
+initFirebase();
 </script>
 </body>
 </html>
