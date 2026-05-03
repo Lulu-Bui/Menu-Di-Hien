@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Thực Đơn Quán</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Be+Vietnam+Pro:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  /* ── Reset & Base ── */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #faf8f4;
+    --bg2: #f3f0ea;
+    --bg3: #ffffff;
+    --text: #1a1710;
+    --text2: #6b6657;
+    --text3: #9c9485;
+    --border: rgba(26,23,16,.1);
+    --border2: rgba(26,23,16,.18);
+    --accent: #c8622a;
+    --accent-bg: #fdf0e8;
+    --danger: #b83232;
+    --danger-bg: #fdf0f0;
+    --radius: 12px;
+    --radius-sm: 8px;
+  }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Be Vietnam Pro', sans-serif;
+    min-height: 100vh;
+  }
+
+  /* ── Header ── */
+  header {
+    background: var(--bg3);
+    border-bottom: 0.5px solid var(--border);
+    padding: 1rem 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+  }
+  .logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: -.3px;
+  }
+  .logo span { color: var(--accent); }
+  .owner-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 14px;
+    border-radius: 20px;
+    border: 0.5px solid var(--border2);
+    background: transparent;
+    font-family: 'Be Vietnam Pro', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text2);
+    cursor: pointer;
+    transition: all .2s;
+  }
+  .owner-btn:hover { background: var(--bg2); color: var(--text); }
+  .owner-btn.active {
+    background: var(--text);
+    color: var(--bg);
+    border-color: var(--text);
+  }
+  .owner-btn .dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: #4caf50;
+    display: none;
+  }
+  .owner-btn.active .dot { display: block; }
+
+  /* ── Owner banner ── */
+  .owner-banner {
+    display: none;
+    background: var(--accent-bg);
+    border-bottom: 0.5px solid rgba(200,98,42,.2);
+    padding: .6rem 1.5rem;
+    font-size: 12px;
+    color: var(--accent);
+    font-weight: 500;
+    align-items: center;
+    gap: 8px;
+  }
+  .owner-banner.show { display: flex; }
+
+  /* ── Hero ── */
+  .hero {
+    text-align: center;
+    padding: 3rem 1.5rem 2rem;
+    max-width: 560px;
+    margin: 0 auto;
+  }
+  .hero-eyebrow {
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: .75rem;
+    font-weight: 500;
+  }
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(32px, 7vw, 52px);
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1.1;
+    margin-bottom: .75rem;
+  }
+  .hero p {
+    font-size: 15px;
+    color: var(--text2);
+    font-weight: 300;
+    line-height: 1.6;
+  }
+
+  /* ── Tabs ── */
+  .tabs-wrap {
+    display: flex;
+    justify-content: center;
+    padding: 0 1.5rem 1.5rem;
+  }
+  .tabs {
+    display: flex;
+    gap: 6px;
+    background: var(--bg2);
+    border-radius: 30px;
+    padding: 4px;
+    border: 0.5px solid var(--border);
+  }
+  .tab {
+    padding: 8px 20px;
+    border-radius: 24px;
+    border: none;
+    background: transparent;
+    font-family: 'Be Vietnam Pro', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    color: var(--text2);
+    transition: all .2s;
+    white-space: nowrap;
+  }
+  .tab.active {
+    background: var(--bg3);
+    color: var(--text);
+    box-shadow: 0 1px 4px rgba(0,0,0,.08);
+  }
+
+  /* ── Menu section ── */
+  .section { max-width: 720px; margin: 0 auto; padding: 0 1.5rem 3rem; }
+  .section-header { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 1.25rem; }
+  .section-info {}
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 24px;
+    font-weight: 500;
+    color: var(--text);
+    line-height: 1.2;
+  }
+  .section-sub { font-size: 13px; color: var(--text3); margin-top: 2px; }
+  .count-badge {
+    font-size: 12px;
+    color: var(--text3);
+    background: var(--bg2);
+    border: 0.5px solid var(--border);
+    padding: 4px 10px;
+    border-radius: 10px;
+    font-weight: 500;
+  }
+
+  /* ── Item grid ── */
+  .item-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px,1fr)); gap: 12px; }
+  .item-card {
+    background: var(--bg3);
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.1rem;
+    position: relative;
+    transition: border-color .2s, transform .15s;
+  }
+  .item-card:hover { border-color: var(--border2); transform: translateY(-1px); }
+  .item-emoji { font-size: 26px; margin-bottom: .5rem; display: block; line-height: 1; }
+  .item-name { font-weight: 600; font-size: 15px; color: var(--text); margin-bottom: 4px; }
+  .item-desc { font-size: 12px; color: var(--text2); line-height: 1.5; margin-bottom: .65rem; }
+  .item-price {
+    font-family: 'Playfair Display', serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--accent);
+  }
+  .item-price-unit { font-size: 11px; font-weight: 400; font-family: 'Be Vietnam Pro', sans-serif; color: var(--text3); }
+
+  /* Owner action buttons on cards */
+  .card-actions {
+    display: none;
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    gap: 4px;
+  }
+  .is-owner .item-card:hover .card-actions { display: flex; }
+  .card-action-btn {
+    width: 26px; height: 26px;
+    border-radius: 50%;
+    border: 0.5px solid var(--border2);
+    background: var(--bg3);
+    cursor: pointer;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text2);
+    transition: all .15s;
+  }
+  .card-action-btn:hover { background: var(--bg2); color: var(--text); }
+  .card-action-btn.danger { border-color: rgba(184,50,50,.3); color: var(--danger); }
+  .card-action-btn.danger:hover { background: var(--danger-bg); }
+
+  /* Add button (owner only) */
+  .add-btn {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    margin-top: 12px;
+    padding: 11px;
+    border-radius: var(--radius-sm);
+    border: 1px dashed var(--border2);
+    background: transparent;
+    cursor: pointer;
+    font-family: 'Be Vietnam Pro', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text2);
+    transition: all .2s;
+  }
+  .add-btn:hover { background: var(--bg2); color: var(--text); border-style: solid; }
+  .is-owner .add-btn { display: flex; }
+
+  /* ── Modal ── */
+  .modal-bg {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(10,8,5,.55);
+    z-index: 200;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(2px);
+  }
+  .modal-bg.open { display: flex; }
+  .modal {
+    background: var(--bg3);
+    border-radius: var(--radius);
+    border: 0.5px solid var(--border2);
+    padding: 1.75rem;
+    width: min(420px, 92vw);
+    max-height: 90vh;
+    overflow-y: auto;
+    animation: modalIn .2s ease;
+  }
+  @keyframes modalIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+  .modal-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; }
+  .modal-head h3 { font-family:'Playfair Display',serif; font-size:19px; font-weight:500; color:var(--text); }
+  .modal-close {
+    width:28px;height:28px;border-radius:50%;border:0.5px solid var(--border);
+    background:transparent;cursor:pointer;font-size:14px;color:var(--text2);
+    display:flex;align-items:center;justify-content:center;
+  }
+  .modal-close:hover{background:var(--bg2);}
+  .field { margin-bottom: 1rem; }
+  .field label { display:block;font-size:12px;font-weight:500;color:var(--text2);margin-bottom:5px;letter-spacing:.3px; }
+  .field input, .field select, .field textarea {
+    width:100%;padding:9px 12px;
+    border:0.5px solid var(--border2);
+    border-radius:var(--radius-sm);
+    background:var(--bg);
+    font-family:'Be Vietnam Pro',sans-serif;
+    font-size:14px;color:var(--text);
+    outline:none;
+    transition:border-color .2s;
+  }
+  .field input:focus, .field select:focus, .field textarea:focus { border-color:var(--accent); }
+  .field textarea { resize:vertical;min-height:65px;line-height:1.5; }
+  .field-row { display:grid;grid-template-columns:1fr 1fr;gap:10px; }
+  .modal-actions { display:flex;gap:8px;margin-top:1.5rem; }
+  .btn-primary {
+    flex:1;padding:10px;background:var(--text);color:var(--bg);
+    border:none;border-radius:var(--radius-sm);
+    font-family:'Be Vietnam Pro',sans-serif;font-size:14px;font-weight:500;cursor:pointer;
+    transition:opacity .2s;
+  }
+  .btn-primary:hover{opacity:.85;}
+  .btn-secondary {
+    padding:10px 18px;background:transparent;
+    border:0.5px solid var(--border2);border-radius:var(--radius-sm);
+    font-family:'Be Vietnam Pro',sans-serif;font-size:14px;cursor:pointer;color:var(--text2);
+    transition:background .2s;
+  }
+  .btn-secondary:hover{background:var(--bg2);}
+
+  /* ── Login modal ── */
+  .login-icon { text-align:center;font-size:32px;margin-bottom:.5rem; }
+  .login-subtitle { text-align:center;font-size:13px;color:var(--text2);margin-bottom:1.5rem;line-height:1.5; }
+  .pw-wrap { position:relative; }
+  .pw-wrap input { padding-right:40px; }
+  .pw-toggle {
+    position:absolute;right:10px;top:50%;transform:translateY(-50%);
+    background:none;border:none;cursor:pointer;font-size:15px;color:var(--text2);padding:4px;
+  }
+  .login-hint { font-size:11px;color:var(--text3);text-align:center;margin-top:.75rem; }
+  .error-msg { font-size:12px;color:var(--danger);margin-top:6px;display:none; }
+
+  /* ── Footer ── */
+  footer {
+    text-align:center;padding:2rem 1.5rem;
+    border-top:0.5px solid var(--border);
+    font-size:12px;color:var(--text3);
+    line-height:1.8;
+  }
+
+  /* ── Animations ── */
+  .item-card { animation: fadeUp .3s ease both; }
+  @keyframes fadeUp { from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);} }
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<header>
+  <div class="logo">Quán <span>Ngon</span></div>
+  <button class="owner-btn" id="ownerToggleBtn" onclick="handleOwnerBtn()">
+    <div class="dot"></div>
+    <span id="ownerBtnLabel">Đăng nhập chủ quán</span>
+  </button>
+</header>
+
+<!-- Owner banner -->
+<div class="owner-banner" id="ownerBanner">
+  ✦ Chế độ chủ quán — bạn có thể thêm, sửa và xoá món trong thực đơn
+</div>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="hero-eyebrow">✦ thực đơn ✦</div>
+  <h1>Thức uống<br>tươi mát</h1>
+  <p>Nguyên liệu tươi, pha chế mỗi ngày — mang lại hương vị thuần tuý nhất</p>
+</section>
+
+<!-- Tabs -->
+<div class="tabs-wrap">
+  <div class="tabs" id="tabs"></div>
+</div>
+
+<!-- Menu content -->
+<div class="section" id="content"></div>
+
+<!-- Footer -->
+<footer>
+  <div>☕ 🫐 🍊</div>
+  <div>Quán Ngon · Mở cửa 7:00 – 22:00 hàng ngày</div>
+  <div style="margin-top:4px;font-size:11px;">© 2025 Quán Ngon. All rights reserved.</div>
+</footer>
+
+<!-- Login Modal -->
+<div class="modal-bg" id="loginModal">
+  <div class="modal" style="max-width:360px;">
+    <div class="modal-head">
+      <h3>Chủ quán</h3>
+      <button class="modal-close" onclick="closeLogin()">✕</button>
+    </div>
+    <div class="login-icon">🔑</div>
+    <div class="login-subtitle">Nhập mật khẩu để vào chế độ quản lý thực đơn</div>
+    <div class="field">
+      <label>Mật khẩu</label>
+      <div class="pw-wrap">
+        <input type="password" id="pwInput" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()">
+        <button class="pw-toggle" onclick="togglePw()" tabindex="-1">👁</button>
+      </div>
+      <div class="error-msg" id="loginErr">Mật khẩu không đúng. Thử lại!</div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-secondary" onclick="closeLogin()">Huỷ</button>
+      <button class="btn-primary" onclick="doLogin()">Đăng nhập →</button>
+    </div>
+    <div class="login-hint">Mật khẩu mặc định: <strong>owner123</strong><br>Đổi trong file HTML dòng <code>OWNER_PASSWORD</code></div>
+  </div>
+</div>
+
+<!-- Add/Edit Item Modal -->
+<div class="modal-bg" id="itemModal">
+  <div class="modal">
+    <div class="modal-head">
+      <h3 id="itemModalTitle">Thêm món mới</h3>
+      <button class="modal-close" onclick="closeItemModal()">✕</button>
+    </div>
+    <div class="field">
+      <label>Danh mục</label>
+      <select id="f-cat"></select>
+    </div>
+    <div class="field">
+      <label>Tên món</label>
+      <input id="f-name" type="text" placeholder="VD: Sinh tố dâu tây">
+    </div>
+    <div class="field">
+      <label>Mô tả ngắn</label>
+      <textarea id="f-desc" placeholder="Nguyên liệu, hương vị..."></textarea>
+    </div>
+    <div class="field-row">
+      <div class="field" style="margin-bottom:0">
+        <label>Giá (VNĐ)</label>
+        <input id="f-price" type="number" placeholder="35000" min="0">
+      </div>
+      <div class="field" style="margin-bottom:0">
+        <label>Biểu tượng</label>
+        <input id="f-emoji" type="text" placeholder="🥤" maxlength="2">
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-secondary" onclick="closeItemModal()">Huỷ</button>
+      <button class="btn-primary" onclick="saveItem()">Lưu món ✓</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── CONFIG: Change your password here ──
+const OWNER_PASSWORD = 'owner123';
+
+// ── State ──
+let isOwner = false;
+let activeTab = 'sinhto';
+let editingId = null;
+let nextId = 50;
+
+// ── Data ──
+const CATS = [
+  { id: 'sinhto', label: 'Sinh tố',  emoji: '🫐', desc: 'Sinh tố tươi nguyên chất mỗi ngày' },
+  { id: 'cafe',   label: 'Cà phê',   emoji: '☕', desc: 'Cà phê rang xay tại chỗ' },
+  { id: 'nuocep', label: 'Nước ép',  emoji: '🍊', desc: 'Nước ép trái cây tươi 100%' },
+];
+
+let menu = {
+  sinhto: [
+    { id:1, name:'Sinh tố dâu tây',  desc:'Dâu tây tươi, sữa tươi, đá xay',      price:35000, emoji:'🍓' },
+    { id:2, name:'Sinh tố xoài',     desc:'Xoài chín, sữa chua, mật ong',         price:32000, emoji:'🥭' },
+    { id:3, name:'Sinh tố bơ',       desc:'Bơ béo, sữa đặc, đá xay',             price:38000, emoji:'🥑' },
+    { id:4, name:'Sinh tố dưa hấu',  desc:'Dưa hấu mát lạnh, không đường',        price:28000, emoji:'🍉' },
+  ],
+  cafe: [
+    { id:5, name:'Cà phê sữa đá',   desc:'Phin truyền thống, sữa đặc nguyên chất',price:25000, emoji:'🧋' },
+    { id:6, name:'Bạc xỉu',         desc:'Sữa nhiều, cà phê nhẹ, thơm mịn',       price:27000, emoji:'🍼' },
+    { id:7, name:'Cà phê đen',      desc:'Đậm vị, nguyên chất 100%',              price:20000, emoji:'☕' },
+  ],
+  nuocep: [
+    { id:8,  name:'Nước ép cam',      desc:'Cam sành tươi, vắt tại chỗ',            price:30000, emoji:'🍊' },
+    { id:9,  name:'Nước ép dưa leo',  desc:'Dưa leo mát, thêm gừng tươi',           price:28000, emoji:'🥒' },
+    { id:10, name:'Nước ép cà rốt táo', desc:'Cà rốt + táo xanh, bổ dưỡng',        price:32000, emoji:'🥕' },
+  ]
+};
+
+// ── Helpers ──
+function fmt(p) { return p.toLocaleString('vi-VN'); }
+
+function allItems() {
+  return [...menu.sinhto, ...menu.cafe, ...menu.nuocep];
+}
+
+function catOf(id) {
+  return Object.keys(menu).find(k => menu[k].some(i => i.id === id));
+}
+
+// ── Render ──
+function render() {
+  renderTabs();
+  renderContent();
+  document.body.classList.toggle('is-owner', isOwner);
+}
+
+function renderTabs() {
+  document.getElementById('tabs').innerHTML = CATS.map(c =>
+    `<button class="tab${c.id === activeTab ? ' active' : ''}" onclick="setTab('${c.id}')">
+      ${c.emoji} ${c.label}
+    </button>`
+  ).join('');
+}
+
+function renderContent() {
+  const cat = CATS.find(c => c.id === activeTab);
+  const items = menu[activeTab];
+  document.getElementById('content').innerHTML = `
+    <div class="section-header">
+      <div class="section-info">
+        <div class="section-title">${cat.emoji} ${cat.label}</div>
+        <div class="section-sub">${cat.desc}</div>
+      </div>
+      <div class="count-badge">${items.length} món</div>
+    </div>
+    <div class="item-grid">
+      ${items.map((item, i) => `
+        <div class="item-card" style="animation-delay:${i * 40}ms">
+          <div class="card-actions">
+            <button class="card-action-btn" onclick="openEdit(${item.id})" title="Chỉnh sửa">✎</button>
+            <button class="card-action-btn danger" onclick="delItem(${item.id})" title="Xoá">✕</button>
+          </div>
+          <span class="item-emoji">${item.emoji}</span>
+          <div class="item-name">${item.name}</div>
+          <div class="item-desc">${item.desc}</div>
+          <div class="item-price">${fmt(item.price)}<span class="item-price-unit"> đ</span></div>
+        </div>
+      `).join('')}
+    </div>
+    <button class="add-btn" onclick="openAdd()">+ Thêm món mới vào danh mục này</button>
+  `;
+}
+
+function setTab(id) { activeTab = id; render(); }
+
+// ── Owner auth ──
+function handleOwnerBtn() {
+  if (isOwner) {
+    logout();
+  } else {
+    openLogin();
+  }
+}
+
+function openLogin() {
+  document.getElementById('pwInput').value = '';
+  document.getElementById('loginErr').style.display = 'none';
+  document.getElementById('loginModal').classList.add('open');
+  setTimeout(() => document.getElementById('pwInput').focus(), 100);
+}
+
+function closeLogin() {
+  document.getElementById('loginModal').classList.remove('open');
+}
+
+function doLogin() {
+  const pw = document.getElementById('pwInput').value;
+  if (pw === OWNER_PASSWORD) {
+    isOwner = true;
+    closeLogin();
+    document.getElementById('ownerBtnLabel').textContent = 'Đăng xuất';
+    document.getElementById('ownerToggleBtn').classList.add('active');
+    document.getElementById('ownerBanner').classList.add('show');
+    render();
+  } else {
+    document.getElementById('loginErr').style.display = 'block';
+    document.getElementById('pwInput').focus();
+    document.getElementById('pwInput').select();
+  }
+}
+
+function logout() {
+  if (!confirm('Đăng xuất chế độ chủ quán?')) return;
+  isOwner = false;
+  document.getElementById('ownerBtnLabel').textContent = 'Đăng nhập chủ quán';
+  document.getElementById('ownerToggleBtn').classList.remove('active');
+  document.getElementById('ownerBanner').classList.remove('show');
+  render();
+}
+
+function togglePw() {
+  const inp = document.getElementById('pwInput');
+  inp.type = inp.type === 'password' ? 'text' : 'password';
+}
+
+// ── Item modal ──
+function populateCatSelect(val) {
+  document.getElementById('f-cat').innerHTML = CATS.map(c =>
+    `<option value="${c.id}"${c.id === val ? ' selected' : ''}>${c.emoji} ${c.label}</option>`
+  ).join('');
+}
+
+function openAdd() {
+  if (!isOwner) return;
+  editingId = null;
+  document.getElementById('itemModalTitle').textContent = 'Thêm món mới';
+  populateCatSelect(activeTab);
+  document.getElementById('f-name').value = '';
+  document.getElementById('f-desc').value = '';
+  document.getElementById('f-price').value = '';
+  document.getElementById('f-emoji').value = '🥤';
+  document.getElementById('itemModal').classList.add('open');
+  setTimeout(() => document.getElementById('f-name').focus(), 100);
+}
+
+function openEdit(id) {
+  if (!isOwner) return;
+  editingId = id;
+  const item = allItems().find(i => i.id === id);
+  const cat = catOf(id);
+  document.getElementById('itemModalTitle').textContent = 'Chỉnh sửa món';
+  populateCatSelect(cat);
+  document.getElementById('f-name').value = item.name;
+  document.getElementById('f-desc').value = item.desc;
+  document.getElementById('f-price').value = item.price;
+  document.getElementById('f-emoji').value = item.emoji;
+  document.getElementById('itemModal').classList.add('open');
+  setTimeout(() => document.getElementById('f-name').focus(), 100);
+}
+
+function closeItemModal() {
+  document.getElementById('itemModal').classList.remove('open');
+}
+
+function saveItem() {
+  if (!isOwner) return;
+  const cat   = document.getElementById('f-cat').value;
+  const name  = document.getElementById('f-name').value.trim();
+  const desc  = document.getElementById('f-desc').value.trim();
+  const price = parseInt(document.getElementById('f-price').value) || 0;
+  const emoji = document.getElementById('f-emoji').value || '🥤';
+  if (!name)  { alert('Vui lòng nhập tên món!'); return; }
+  if (!price) { alert('Vui lòng nhập giá!'); return; }
+
+  if (editingId) {
+    const oldCat = catOf(editingId);
+    menu[oldCat] = menu[oldCat].filter(i => i.id !== editingId);
+    menu[cat].push({ id: editingId, name, desc, price, emoji });
+    activeTab = cat;
+  } else {
+    menu[cat].push({ id: nextId++, name, desc, price, emoji });
+    activeTab = cat;
+  }
+  closeItemModal();
+  render();
+}
+
+function delItem(id) {
+  if (!isOwner) return;
+  const item = allItems().find(i => i.id === id);
+  if (!confirm(`Xoá "${item.name}" khỏi thực đơn?`)) return;
+  const cat = catOf(id);
+  menu[cat] = menu[cat].filter(i => i.id !== id);
+  render();
+}
+
+// Close modals on bg click
+document.getElementById('loginModal').addEventListener('click', function(e) {
+  if (e.target === this) closeLogin();
+});
+document.getElementById('itemModal').addEventListener('click', function(e) {
+  if (e.target === this) closeItemModal();
+});
+
+// Close on Escape
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') { closeLogin(); closeItemModal(); }
+});
+
+// ── Init ──
+render();
+</script>
+</body>
+</html>
