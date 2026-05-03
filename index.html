@@ -6,399 +6,119 @@
 <title>Thực Đơn Quán</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Be+Vietnam+Pro:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
-  /* ── Reset & Base ── */
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   :root {
-    --bg: #faf8f4;
-    --bg2: #f3f0ea;
-    --bg3: #ffffff;
-    --text: #1a1710;
-    --text2: #6b6657;
-    --text3: #9c9485;
-    --border: rgba(26,23,16,.1);
-    --border2: rgba(26,23,16,.18);
-    --accent: #c8622a;
-    --accent-bg: #fdf0e8;
-    --danger: #b83232;
-    --danger-bg: #fdf0f0;
-    --radius: 12px;
-    --radius-sm: 8px;
+    --bg: #faf8f4; --bg2: #f3f0ea; --bg3: #ffffff;
+    --text: #1a1710; --text2: #6b6657; --text3: #9c9485;
+    --border: rgba(26,23,16,.1); --border2: rgba(26,23,16,.18);
+    --accent: #c8622a; --accent-bg: #fdf0e8;
+    --danger: #b83232; --danger-bg: #fdf0f0;
+    --radius: 12px; --radius-sm: 8px;
   }
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'Be Vietnam Pro', sans-serif;
-    min-height: 100vh;
-  }
-
-  /* ── Header ── */
-  header {
-    background: var(--bg3);
-    border-bottom: 0.5px solid var(--border);
-    padding: 1rem 1.5rem;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    position: sticky;
-    top: 0;
-    z-index: 50;
-  }
-  .logo {
-    font-family: 'Playfair Display', serif;
-    font-size: 20px;
-    font-weight: 700;
-    color: var(--text);
-    letter-spacing: -.3px;
-  }
+  body { background: var(--bg); color: var(--text); font-family: 'Be Vietnam Pro', sans-serif; min-height: 100vh; }
+  header { background: var(--bg3); border-bottom: 0.5px solid var(--border); padding: 1rem 1.5rem; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 50; }
+  .logo { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 700; color: var(--text); letter-spacing: -.3px; }
   .logo span { color: var(--accent); }
-  .owner-btn {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    padding: 7px 14px;
-    border-radius: 20px;
-    border: 0.5px solid var(--border2);
-    background: transparent;
-    font-family: 'Be Vietnam Pro', sans-serif;
-    font-size: 13px;
-    font-weight: 500;
-    color: var(--text2);
-    cursor: pointer;
-    transition: all .2s;
-  }
+  .owner-btn { display: flex; align-items: center; gap: 6px; padding: 7px 14px; border-radius: 20px; border: 0.5px solid var(--border2); background: transparent; font-family: 'Be Vietnam Pro', sans-serif; font-size: 13px; font-weight: 500; color: var(--text2); cursor: pointer; transition: all .2s; }
   .owner-btn:hover { background: var(--bg2); color: var(--text); }
-  .owner-btn.active {
-    background: var(--text);
-    color: var(--bg);
-    border-color: var(--text);
-  }
-  /* Shorten button text on small screens */
-  @media (max-width: 420px) {
-    .owner-btn { padding: 7px 10px; font-size: 12px; }
-    .logo { font-size: 17px; }
-  }
-  .owner-btn .dot {
-    width: 7px; height: 7px;
-    border-radius: 50%;
-    background: #4caf50;
-    display: none;
-  }
+  .owner-btn.active { background: var(--text); color: var(--bg); border-color: var(--text); }
+  @media (max-width: 420px) { .owner-btn { padding: 7px 10px; font-size: 12px; } .logo { font-size: 17px; } }
+  .owner-btn .dot { width: 7px; height: 7px; border-radius: 50%; background: #4caf50; display: none; }
   .owner-btn.active .dot { display: block; }
-
-  /* ── Owner banner ── */
-  .owner-banner {
-    display: none;
-    background: var(--accent-bg);
-    border-bottom: 0.5px solid rgba(200,98,42,.2);
-    padding: .6rem 1.5rem;
-    font-size: 12px;
-    color: var(--accent);
-    font-weight: 500;
-    align-items: center;
-    gap: 8px;
-  }
+  .owner-banner { display: none; background: var(--accent-bg); border-bottom: 0.5px solid rgba(200,98,42,.2); padding: .6rem 1.5rem; font-size: 12px; color: var(--accent); font-weight: 500; align-items: center; gap: 8px; }
   .owner-banner.show { display: flex; }
-
-  /* ── Hero ── */
-  .hero {
-    text-align: center;
-    padding: 3rem 1.5rem 2rem;
-    max-width: 560px;
-    margin: 0 auto;
-  }
-  .hero-eyebrow {
-    font-size: 11px;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    color: var(--accent);
-    margin-bottom: .75rem;
-    font-weight: 500;
-  }
-  .hero h1 {
-    font-family: 'Playfair Display', serif;
-    font-size: clamp(32px, 7vw, 52px);
-    font-weight: 700;
-    color: var(--text);
-    line-height: 1.1;
-    margin-bottom: .75rem;
-  }
-  .hero p {
-    font-size: 15px;
-    color: var(--text2);
-    font-weight: 300;
-    line-height: 1.6;
-  }
-
-  /* ── Tabs ── */
-  .tabs-wrap {
-    display: flex;
-    justify-content: center;
-    padding: 0 1.5rem 1.5rem;
-  }
-  .tabs {
-    display: flex;
-    gap: 6px;
-    background: var(--bg2);
-    border-radius: 30px;
-    padding: 4px;
-    border: 0.5px solid var(--border);
-  }
-  .tab {
-    padding: 8px 20px;
-    border-radius: 24px;
-    border: none;
-    background: transparent;
-    font-family: 'Be Vietnam Pro', sans-serif;
-    font-size: 13px;
-    font-weight: 500;
-    cursor: pointer;
-    color: var(--text2);
-    transition: all .2s;
-    white-space: nowrap;
-  }
-  .tab.active {
-    background: var(--bg3);
-    color: var(--text);
-    box-shadow: 0 1px 4px rgba(0,0,0,.08);
-  }
-
-  /* ── Menu section ── */
+  .hero { text-align: center; padding: 3rem 1.5rem 2rem; max-width: 560px; margin: 0 auto; }
+  .hero-eyebrow { font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: var(--accent); margin-bottom: .75rem; font-weight: 500; }
+  .hero h1 { font-family: 'Playfair Display', serif; font-size: clamp(32px, 7vw, 52px); font-weight: 700; color: var(--text); line-height: 1.1; margin-bottom: .75rem; }
+  .hero p { font-size: 15px; color: var(--text2); font-weight: 300; line-height: 1.6; }
+  .tabs-wrap { display: flex; justify-content: center; padding: 0 1.5rem 1.5rem; }
+  .tabs { display: flex; gap: 6px; background: var(--bg2); border-radius: 30px; padding: 4px; border: 0.5px solid var(--border); }
+  .tab { padding: 8px 20px; border-radius: 24px; border: none; background: transparent; font-family: 'Be Vietnam Pro', sans-serif; font-size: 13px; font-weight: 500; cursor: pointer; color: var(--text2); transition: all .2s; white-space: nowrap; }
+  .tab.active { background: var(--bg3); color: var(--text); box-shadow: 0 1px 4px rgba(0,0,0,.08); }
   .section { max-width: 720px; margin: 0 auto; padding: 0 1.5rem 3rem; }
   .section-header { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 1.25rem; }
-  .section-info {}
-  .section-title {
-    font-family: 'Playfair Display', serif;
-    font-size: 24px;
-    font-weight: 500;
-    color: var(--text);
-    line-height: 1.2;
-  }
+  .section-title { font-family: 'Playfair Display', serif; font-size: 24px; font-weight: 500; color: var(--text); line-height: 1.2; }
   .section-sub { font-size: 13px; color: var(--text3); margin-top: 2px; }
-  .count-badge {
-    font-size: 12px;
-    color: var(--text3);
-    background: var(--bg2);
-    border: 0.5px solid var(--border);
-    padding: 4px 10px;
-    border-radius: 10px;
-    font-weight: 500;
-  }
-
-  /* ── Item grid ── */
+  .count-badge { font-size: 12px; color: var(--text3); background: var(--bg2); border: 0.5px solid var(--border); padding: 4px 10px; border-radius: 10px; font-weight: 500; }
   .item-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px,1fr)); gap: 12px; }
-  @media (max-width: 480px) {
-    .item-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
-    .section { padding: 0 1rem 3rem; }
-  }
-  @media (max-width: 360px) {
-    .item-grid { grid-template-columns: 1fr; }
-  }
-  .item-card {
-    background: var(--bg3);
-    border: 0.5px solid var(--border);
-    border-radius: var(--radius);
-    padding: 1.1rem;
-    position: relative;
-    transition: border-color .2s, transform .15s;
-  }
-  /* On mobile owner mode, add padding-top so action buttons don't cover emoji */
-  .is-owner.is-touch .item-card { padding-top: 2.5rem; }
+  @media (max-width: 480px) { .item-grid { grid-template-columns: 1fr 1fr; gap: 10px; } .section { padding: 0 1rem 3rem; } }
+  @media (max-width: 360px) { .item-grid { grid-template-columns: 1fr; } }
+  .item-card { background: var(--bg3); border: 0.5px solid var(--border); border-radius: var(--radius); padding: 1.1rem; position: relative; transition: border-color .2s, transform .15s; animation: fadeUp .3s ease both; }
   .item-card:hover { border-color: var(--border2); transform: translateY(-1px); }
+  .is-owner.is-touch .item-card { padding-top: 2.5rem; }
   .item-emoji { font-size: 26px; margin-bottom: .5rem; display: block; line-height: 1; }
   .item-name { font-weight: 600; font-size: 15px; color: var(--text); margin-bottom: 4px; }
   .item-desc { font-size: 12px; color: var(--text2); line-height: 1.5; margin-bottom: .65rem; }
-  .item-price {
-    font-family: 'Playfair Display', serif;
-    font-size: 18px;
-    font-weight: 700;
-    color: var(--accent);
-  }
+  .item-price { font-family: 'Playfair Display', serif; font-size: 18px; font-weight: 700; color: var(--accent); }
   .item-price-unit { font-size: 11px; font-weight: 400; font-family: 'Be Vietnam Pro', sans-serif; color: var(--text3); }
-
-  /* Owner action buttons on cards */
-  .card-actions {
-    display: none;
-    position: absolute;
-    top: 8px;
-    right: 8px;
-    gap: 4px;
-  }
+  .card-actions { display: none; position: absolute; top: 8px; right: 8px; gap: 4px; }
   .is-owner .item-card:hover .card-actions { display: flex; }
-  /* On touch devices: always show actions when owner (no hover available) */
   .is-owner.is-touch .card-actions { display: flex; }
-  .card-action-btn {
-    width: 32px; height: 32px;
-    border-radius: 50%;
-    border: 0.5px solid var(--border2);
-    background: var(--bg3);
-    cursor: pointer;
-    font-size: 14px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--text2);
-    transition: all .15s;
-    -webkit-tap-highlight-color: transparent;
-  }
+  .card-action-btn { width: 32px; height: 32px; border-radius: 50%; border: 0.5px solid var(--border2); background: var(--bg3); cursor: pointer; font-size: 14px; display: flex; align-items: center; justify-content: center; color: var(--text2); transition: all .15s; -webkit-tap-highlight-color: transparent; }
   .card-action-btn:hover, .card-action-btn:active { background: var(--bg2); color: var(--text); }
   .card-action-btn.danger { border-color: rgba(184,50,50,.3); color: var(--danger); }
   .card-action-btn.danger:hover, .card-action-btn.danger:active { background: var(--danger-bg); }
-
-  /* Add button (owner only) */
-  .add-btn {
-    display: none;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    width: 100%;
-    margin-top: 12px;
-    padding: 11px;
-    border-radius: var(--radius-sm);
-    border: 1px dashed var(--border2);
-    background: transparent;
-    cursor: pointer;
-    font-family: 'Be Vietnam Pro', sans-serif;
-    font-size: 13px;
-    font-weight: 500;
-    color: var(--text2);
-    transition: all .2s;
-  }
+  .add-btn { display: none; align-items: center; justify-content: center; gap: 8px; width: 100%; margin-top: 12px; padding: 11px; border-radius: var(--radius-sm); border: 1px dashed var(--border2); background: transparent; cursor: pointer; font-family: 'Be Vietnam Pro', sans-serif; font-size: 13px; font-weight: 500; color: var(--text2); transition: all .2s; }
   .add-btn:hover { background: var(--bg2); color: var(--text); border-style: solid; }
   .is-owner .add-btn { display: flex; }
-
-  /* ── Field row stacks on mobile ── */
-  @media (max-width: 400px) {
-    .field-row { grid-template-columns: 1fr; }
-  }
-
-  /* ── Modal ── */
-  .modal-bg {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(10,8,5,.55);
-    z-index: 200;
-    align-items: flex-end;
-    justify-content: center;
-    backdrop-filter: blur(2px);
-  }
+  .modal-bg { display: none; position: fixed; inset: 0; background: rgba(10,8,5,.55); z-index: 200; align-items: flex-end; justify-content: center; backdrop-filter: blur(2px); }
   .modal-bg.open { display: flex; }
-  @media (min-width: 520px) {
-    .modal-bg { align-items: center; }
-    .modal { border-radius: var(--radius) !important; width: min(420px, 92vw) !important; }
-  }
-  .modal {
-    background: var(--bg3);
-    border-radius: var(--radius) var(--radius) 0 0;
-    border: 0.5px solid var(--border2);
-    padding: 1.75rem 1.5rem calc(1.75rem + env(safe-area-inset-bottom, 0px));
-    width: 100%;
-    max-height: 92vh;
-    overflow-y: auto;
-    animation: modalIn .25s ease;
-    -webkit-overflow-scrolling: touch;
-  }
+  @media (min-width: 520px) { .modal-bg { align-items: center; } .modal { border-radius: var(--radius) !important; width: min(420px, 92vw) !important; } }
+  .modal { background: var(--bg3); border-radius: var(--radius) var(--radius) 0 0; border: 0.5px solid var(--border2); padding: 1.75rem 1.5rem calc(1.75rem + env(safe-area-inset-bottom, 0px)); width: 100%; max-height: 92vh; overflow-y: auto; animation: modalIn .25s ease; -webkit-overflow-scrolling: touch; }
   @keyframes modalIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+  @keyframes fadeUp { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:translateY(0); } }
   .modal-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; }
-  .modal-head h3 { font-family:'Playfair Display',serif; font-size:19px; font-weight:500; color:var(--text); }
-  .modal-close {
-    width:28px;height:28px;border-radius:50%;border:0.5px solid var(--border);
-    background:transparent;cursor:pointer;font-size:14px;color:var(--text2);
-    display:flex;align-items:center;justify-content:center;
-  }
-  .modal-close:hover{background:var(--bg2);}
+  .modal-head h3 { font-family: 'Playfair Display', serif; font-size: 19px; font-weight: 500; color: var(--text); }
+  .modal-close { width:28px; height:28px; border-radius:50%; border:0.5px solid var(--border); background:transparent; cursor:pointer; font-size:14px; color:var(--text2); display:flex; align-items:center; justify-content:center; }
+  .modal-close:hover { background: var(--bg2); }
   .field { margin-bottom: 1rem; }
-  .field label { display:block;font-size:12px;font-weight:500;color:var(--text2);margin-bottom:5px;letter-spacing:.3px; }
-  .field input, .field select, .field textarea {
-    width:100%;padding:9px 12px;
-    border:0.5px solid var(--border2);
-    border-radius:var(--radius-sm);
-    background:var(--bg);
-    font-family:'Be Vietnam Pro',sans-serif;
-    font-size:14px;color:var(--text);
-    outline:none;
-    transition:border-color .2s;
-  }
-  .field input:focus, .field select:focus, .field textarea:focus { border-color:var(--accent); }
-  .field textarea { resize:vertical;min-height:65px;line-height:1.5; }
-  .field-row { display:grid;grid-template-columns:1fr 1fr;gap:10px; }
-  .modal-actions { display:flex;gap:8px;margin-top:1.5rem; }
-  .btn-primary {
-    flex:1;padding:10px;background:var(--text);color:var(--bg);
-    border:none;border-radius:var(--radius-sm);
-    font-family:'Be Vietnam Pro',sans-serif;font-size:14px;font-weight:500;cursor:pointer;
-    transition:opacity .2s;
-  }
-  .btn-primary:hover{opacity:.85;}
-  .btn-secondary {
-    padding:10px 18px;background:transparent;
-    border:0.5px solid var(--border2);border-radius:var(--radius-sm);
-    font-family:'Be Vietnam Pro',sans-serif;font-size:14px;cursor:pointer;color:var(--text2);
-    transition:background .2s;
-  }
-  .btn-secondary:hover{background:var(--bg2);}
-
-  /* ── Login modal ── */
-  .login-icon { text-align:center;font-size:32px;margin-bottom:.5rem; }
-  .login-subtitle { text-align:center;font-size:13px;color:var(--text2);margin-bottom:1.5rem;line-height:1.5; }
+  .field label { display:block; font-size:12px; font-weight:500; color:var(--text2); margin-bottom:5px; letter-spacing:.3px; }
+  .field input, .field select, .field textarea { width:100%; padding:9px 12px; border:0.5px solid var(--border2); border-radius:var(--radius-sm); background:var(--bg); font-family:'Be Vietnam Pro',sans-serif; font-size:14px; color:var(--text); outline:none; transition:border-color .2s; }
+  .field input:focus, .field select:focus, .field textarea:focus { border-color: var(--accent); }
+  .field textarea { resize:vertical; min-height:65px; line-height:1.5; }
+  .field-row { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+  @media (max-width: 400px) { .field-row { grid-template-columns: 1fr; } }
+  .modal-actions { display:flex; gap:8px; margin-top:1.5rem; }
+  .btn-primary { flex:1; padding:10px; background:var(--text); color:var(--bg); border:none; border-radius:var(--radius-sm); font-family:'Be Vietnam Pro',sans-serif; font-size:14px; font-weight:500; cursor:pointer; transition:opacity .2s; }
+  .btn-primary:hover { opacity:.85; }
+  .btn-secondary { padding:10px 18px; background:transparent; border:0.5px solid var(--border2); border-radius:var(--radius-sm); font-family:'Be Vietnam Pro',sans-serif; font-size:14px; cursor:pointer; color:var(--text2); transition:background .2s; }
+  .btn-secondary:hover { background: var(--bg2); }
+  .login-icon { text-align:center; font-size:32px; margin-bottom:.5rem; }
+  .login-subtitle { text-align:center; font-size:13px; color:var(--text2); margin-bottom:1.5rem; line-height:1.5; }
   .pw-wrap { position:relative; }
   .pw-wrap input { padding-right:40px; }
-  .pw-toggle {
-    position:absolute;right:10px;top:50%;transform:translateY(-50%);
-    background:none;border:none;cursor:pointer;font-size:15px;color:var(--text2);padding:4px;
-  }
-  .login-hint { font-size:11px;color:var(--text3);text-align:center;margin-top:.75rem; }
-  .error-msg { font-size:12px;color:var(--danger);margin-top:6px;display:none; }
-
-  /* ── Footer ── */
-  footer {
-    text-align:center;padding:2rem 1.5rem;
-    border-top:0.5px solid var(--border);
-    font-size:12px;color:var(--text3);
-    line-height:1.8;
-  }
-
-  /* ── Animations ── */
-  .item-card { animation: fadeUp .3s ease both; }
-  @keyframes fadeUp { from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);} }
+  .pw-toggle { position:absolute; right:10px; top:50%; transform:translateY(-50%); background:none; border:none; cursor:pointer; font-size:15px; color:var(--text2); padding:4px; }
+  .error-msg { font-size:12px; color:var(--danger); margin-top:6px; display:none; }
+  footer { text-align:center; padding:2rem 1.5rem; border-top:0.5px solid var(--border); font-size:12px; color:var(--text3); line-height:1.8; }
 </style>
 </head>
 <body>
 
-<!-- Header -->
 <header>
-    <div class="logo">Anh <span>Duong<span> Menu</span></div>
+  <div class="logo">Anh <span>Dương</span> Menu</div>
   <button class="owner-btn" id="ownerToggleBtn" onclick="handleOwnerBtn()">
     <div class="dot"></div>
     <span id="ownerBtnLabel">Chủ quán</span>
   </button>
 </header>
 
-<!-- Owner banner -->
 <div class="owner-banner" id="ownerBanner">
   ✦ Chế độ chủ quán — bạn có thể thêm, sửa và xoá món trong thực đơn
 </div>
 
-<!-- Hero -->
 <section class="hero">
   <div class="hero-eyebrow">✦ thực đơn ✦</div>
   <h1>Thức uống<br>tươi mát</h1>
   <p>Nguyên liệu tươi, pha chế mỗi ngày — mang lại hương vị thuần tuý nhất</p>
 </section>
 
-<!-- Tabs -->
-<div class="tabs-wrap">
-  <div class="tabs" id="tabs"></div>
-</div>
-
-<!-- Menu content -->
+<div class="tabs-wrap"><div class="tabs" id="tabs"></div></div>
 <div class="section" id="content"></div>
 
-<!-- Footer -->
 <footer>
   <div>☕ 🫐 🍊</div>
- <div>Anh Duong · SDT: 0919 258 801 </div>
-  <div style="margin-top:4px;font-size:11px;">© Anh Duong. All rights reserved.</div>
+  <div>Anh Dương · SDT: 0919 258 801</div>
+  <div style="margin-top:4px;font-size:11px;">© Anh Dương. All rights reserved.</div>
 </footer>
 
 <!-- Login Modal -->
@@ -425,34 +145,19 @@
   </div>
 </div>
 
-<!-- Add/Edit Item Modal -->
+<!-- Add/Edit Modal -->
 <div class="modal-bg" id="itemModal">
   <div class="modal">
     <div class="modal-head">
       <h3 id="itemModalTitle">Thêm món mới</h3>
       <button class="modal-close" onclick="closeItemModal()">✕</button>
     </div>
-    <div class="field">
-      <label>Danh mục</label>
-      <select id="f-cat"></select>
-    </div>
-    <div class="field">
-      <label>Tên món</label>
-      <input id="f-name" type="text" placeholder="VD: Sinh tố dâu tây">
-    </div>
-    <div class="field">
-      <label>Mô tả ngắn</label>
-      <textarea id="f-desc" placeholder="Nguyên liệu, hương vị..."></textarea>
-    </div>
+    <div class="field"><label>Danh mục</label><select id="f-cat"></select></div>
+    <div class="field"><label>Tên món</label><input id="f-name" type="text" placeholder="VD: Sinh tố dâu tây"></div>
+    <div class="field"><label>Mô tả ngắn</label><textarea id="f-desc" placeholder="Nguyên liệu, hương vị..."></textarea></div>
     <div class="field-row">
-      <div class="field" style="margin-bottom:0">
-        <label>Giá (VNĐ)</label>
-        <input id="f-price" type="number" placeholder="35000" min="0">
-      </div>
-      <div class="field" style="margin-bottom:0">
-        <label>Biểu tượng</label>
-        <input id="f-emoji" type="text" placeholder="🥤" maxlength="2">
-      </div>
+      <div class="field" style="margin-bottom:0"><label>Giá (VNĐ)</label><input id="f-price" type="number" placeholder="35000" min="0"></div>
+      <div class="field" style="margin-bottom:0"><label>Biểu tượng</label><input id="f-emoji" type="text" placeholder="🥤" maxlength="2"></div>
     </div>
     <div class="modal-actions">
       <button class="btn-secondary" onclick="closeItemModal()">Huỷ</button>
@@ -461,150 +166,104 @@
   </div>
 </div>
 
-<script type="module">
-// ── Touch device detection ──
-const isTouchDevice = () => window.matchMedia('(hover: none)').matches || 'ontouchstart' in window;
-if (isTouchDevice()) document.body.classList.add('is-touch');
+<!-- Firebase Compat SDK (no "import", works on any hosting) -->
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
 
-// ── CONFIG ──
+<script>
+// ── Touch detection ──
+if (window.matchMedia('(hover: none)').matches || 'ontouchstart' in window) {
+  document.body.classList.add('is-touch');
+}
+
+// ── Password (change here) ──
 const OWNER_PASSWORD = '23012021';
 
-// ─────────────────────────────────────────────
-// Firebase config — shared real-time database
-// HOW TO SET UP YOUR OWN (free, 5 minutes):
-//   1. Go to https://console.firebase.google.com
-//   2. Create project → Firestore Database → Start in test mode
-//   3. Project settings → Your apps → Web app → copy firebaseConfig
-//   4. Replace the config object below with yours
-// ─────────────────────────────────────────────
-import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
-import { getFirestore, doc, getDoc, setDoc, onSnapshot } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+// ── Firebase config ──
+const firebaseConfig = {
+  apiKey: "AIzaSyAHgg7kLRPNqPcRNQRYE7hx_S8nDrRwjWw",
+  authDomain: "menucafe-e7461.firebaseapp.com",
+  projectId: "menucafe-e7461",
+  storageBucket: "menucafe-e7461.firebasestorage.app",
+  messagingSenderId: "34461571288",
+  appId: "1:34461571288:web:2828e316b45a51309a1fad"
+};
 
-<script type="module">
-  // Import the functions you need from the SDKs you need
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
-  import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-analytics.js";
-  // TODO: Add SDKs for Firebase products that you want to use
-  // https://firebase.google.com/docs/web/setup#available-libraries
-
-  // Your web app's Firebase configuration
-  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-  const firebaseConfig = {
-    apiKey: "AIzaSyAHgg7kLRPNqPcRNQRYE7hx_S8nDrRwjWw",
-    authDomain: "menucafe-e7461.firebaseapp.com",
-    projectId: "menucafe-e7461",
-    storageBucket: "menucafe-e7461.firebasestorage.app",
-    messagingSenderId: "34461571288",
-    appId: "1:34461571288:web:2828e316b45a51309a1fad",
-    measurementId: "G-JQ85P4925F"
-  };
-
-  // Initialize Firebase
-  const app = initializeApp(firebaseConfig);
-  const analytics = getAnalytics(app);
-</script>
-
-// ── Default menu (used only on first ever load) ──
+// ── Default menu data ──
 const DEFAULT_MENU = {
   nextId: 50,
   sinhto: [
-    { id:1, name:'Sinh tố dâu tây',  desc:'Dâu tây tươi, sữa tươi, đá xay',       price:35000, emoji:'🍓' },
-    { id:2, name:'Sinh tố xoài',     desc:'Xoài chín, sữa chua, mật ong',          price:32000, emoji:'🥭' },
-    { id:3, name:'Sinh tố bơ',       desc:'Bơ béo, sữa đặc, đá xay',              price:38000, emoji:'🥑' },
-    { id:4, name:'Sinh tố dưa hấu',  desc:'Dưa hấu mát lạnh, không đường',         price:28000, emoji:'🍉' },
+    { id:1, name:'Sinh tố dâu tây',     desc:'Dâu tây tươi, sữa tươi, đá xay',        price:35000, emoji:'🍓' },
+    { id:2, name:'Sinh tố xoài',        desc:'Xoài chín, sữa chua, mật ong',           price:32000, emoji:'🥭' },
+    { id:3, name:'Sinh tố bơ',          desc:'Bơ béo, sữa đặc, đá xay',               price:38000, emoji:'🥑' },
+    { id:4, name:'Sinh tố dưa hấu',     desc:'Dưa hấu mát lạnh, không đường',          price:28000, emoji:'🍉' },
   ],
   cafe: [
-    { id:5, name:'Cà phê sữa đá',   desc:'Phin truyền thống, sữa đặc nguyên chất', price:25000, emoji:'🧋' },
-    { id:6, name:'Bạc xỉu',         desc:'Sữa nhiều, cà phê nhẹ, thơm mịn',        price:27000, emoji:'🍼' },
-    { id:7, name:'Cà phê đen',      desc:'Đậm vị, nguyên chất 100%',               price:20000, emoji:'☕' },
+    { id:5, name:'Cà phê sữa đá',      desc:'Phin truyền thống, sữa đặc nguyên chất', price:25000, emoji:'🧋' },
+    { id:6, name:'Bạc xỉu',            desc:'Sữa nhiều, cà phê nhẹ, thơm mịn',        price:27000, emoji:'🍼' },
+    { id:7, name:'Cà phê đen',         desc:'Đậm vị, nguyên chất 100%',               price:20000, emoji:'☕' },
   ],
   nuocep: [
-    { id:8,  name:'Nước ép cam',       desc:'Cam sành tươi, vắt tại chỗ',            price:30000, emoji:'🍊' },
-    { id:9,  name:'Nước ép dưa leo',   desc:'Dưa leo mát, thêm gừng tươi',           price:28000, emoji:'🥒' },
-    { id:10, name:'Nước ép cà rốt táo',desc:'Cà rốt + táo xanh, bổ dưỡng',          price:32000, emoji:'🥕' },
+    { id:8,  name:'Nước ép cam',        desc:'Cam sành tươi, vắt tại chỗ',             price:30000, emoji:'🍊' },
+    { id:9,  name:'Nước ép dưa leo',    desc:'Dưa leo mát, thêm gừng tươi',            price:28000, emoji:'🥒' },
+    { id:10, name:'Nước ép cà rốt táo', desc:'Cà rốt + táo xanh, bổ dưỡng',           price:32000, emoji:'🥕' },
   ]
 };
 
 const CATS = [
-  { id: 'sinhto', label: 'Sinh tố',  emoji: '🫐', desc: 'Sinh tố tươi nguyên chất mỗi ngày' },
-  { id: 'cafe',   label: 'Cà phê',   emoji: '☕', desc: 'Cà phê rang xay tại chỗ' },
-  { id: 'nuocep', label: 'Nước ép',  emoji: '🍊', desc: 'Nước ép trái cây tươi 100%' },
+  { id:'sinhto', label:'Sinh tố', emoji:'🫐', desc:'Sinh tố tươi nguyên chất mỗi ngày' },
+  { id:'cafe',   label:'Cà phê',  emoji:'☕', desc:'Cà phê rang xay tại chỗ' },
+  { id:'nuocep', label:'Nước ép', emoji:'🍊', desc:'Nước ép trái cây tươi 100%' },
 ];
 
 // ── State ──
-let isOwner = false;
-let activeTab = 'sinhto';
-let editingId = null;
+let isOwner = false, activeTab = 'sinhto', editingId = null;
 let menu = JSON.parse(JSON.stringify(DEFAULT_MENU));
-let db, menuDocRef;
-let usingFirebase = false;
+let menuDocRef = null, usingFirebase = false;
 
 // ── Firebase init ──
 async function initFirebase() {
   try {
-    if (firebaseConfig.apiKey === 'AIzaSyDemo-ReplaceWithYours') {
-      throw new Error('demo');
-    }
-    const app = initializeApp(firebaseConfig);
-    db = getFirestore(app);
-    menuDocRef = doc(db, 'quannuoc', 'menu');
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+    menuDocRef = db.doc('quannuoc/menu');
 
-    // Load once first
-    const snap = await getDoc(menuDocRef);
-    if (snap.exists()) {
+    const snap = await menuDocRef.get();
+    if (snap.exists) {
       menu = snap.data();
     } else {
-      await setDoc(menuDocRef, DEFAULT_MENU);
+      await menuDocRef.set(DEFAULT_MENU);
     }
     usingFirebase = true;
 
-    // Live updates — all users see changes instantly
-    onSnapshot(menuDocRef, (snap) => {
-      if (snap.exists()) {
-        menu = snap.data();
-        render();
-      }
+    // Live listener — all users see changes instantly
+    menuDocRef.onSnapshot(snap => {
+      if (snap.exists) { menu = snap.data(); render(); }
     });
 
-    hideSaveStatus();
-  } catch (e) {
-    // Fallback to localStorage if Firebase not configured
+  } catch(e) {
+    console.warn('Firebase unavailable, using localStorage:', e.message);
     usingFirebase = false;
-    const saved = localStorage.getItem('quannuoc_menu');
-    if (saved) menu = JSON.parse(saved);
-    showSaveStatus(e.message === 'demo');
+    try {
+      const saved = localStorage.getItem('quannuoc_menu');
+      if (saved) menu = JSON.parse(saved);
+    } catch(_) {}
+
+    const bar = document.createElement('div');
+    bar.style.cssText = 'background:#fff3cd;border-bottom:0.5px solid #e8c84a;padding:.5rem 1.5rem;font-size:12px;color:#856404;font-family:"Be Vietnam Pro",sans-serif;';
+    bar.innerHTML = '⚠️ Không kết nối được Firebase. Dữ liệu lưu tạm trên thiết bị này.';
+    document.body.insertBefore(bar, document.body.children[1]);
   }
   render();
 }
 
 async function persistMenu() {
   if (usingFirebase) {
-    try {
-      await setDoc(menuDocRef, menu);
-    } catch(e) { console.error('Save failed', e); }
+    try { await menuDocRef.set(menu); }
+    catch(e) { console.error('Save failed:', e); }
   } else {
     localStorage.setItem('quannuoc_menu', JSON.stringify(menu));
   }
-}
-
-function showSaveStatus(isDemo) {
-  let bar = document.getElementById('saveStatusBar');
-  if (!bar) {
-    bar = document.createElement('div');
-    bar.id = 'saveStatusBar';
-    bar.style.cssText = 'background:#fff3cd;border-bottom:0.5px solid #e8c84a;padding:.5rem 1.5rem;font-size:12px;color:#856404;font-family:Be Vietnam Pro,sans-serif;display:flex;align-items:center;gap:8px;';
-    document.body.insertBefore(bar, document.body.children[1]);
-  }
-  if (isDemo) {
-    bar.innerHTML = '⚠️ <span>Đang dùng chế độ <b>lưu cục bộ</b> (chỉ thiết bị này). Để lưu dùng chung, hãy cài Firebase — xem hướng dẫn trong file HTML.</span>';
-  } else {
-    bar.innerHTML = '⚠️ <span>Không kết nối được Firebase. Đang lưu tạm trên thiết bị này.</span>';
-  }
-}
-
-function hideSaveStatus() {
-  const bar = document.getElementById('saveStatusBar');
-  if (bar) bar.remove();
 }
 
 // ── Helpers ──
@@ -614,25 +273,15 @@ function catOf(id) { return Object.keys(menu).find(k => Array.isArray(menu[k]) &
 
 // ── Render ──
 function render() {
-  renderTabs();
-  renderContent();
-  document.body.classList.toggle('is-owner', isOwner);
-}
-
-function renderTabs() {
   document.getElementById('tabs').innerHTML = CATS.map(c =>
-    `<button class="tab${c.id === activeTab ? ' active' : ''}" onclick="window._setTab('${c.id}')">
-      ${c.emoji} ${c.label}
-    </button>`
+    `<button class="tab${c.id===activeTab?' active':''}" onclick="setTab('${c.id}')">${c.emoji} ${c.label}</button>`
   ).join('');
-}
 
-function renderContent() {
   const cat = CATS.find(c => c.id === activeTab);
   const items = menu[activeTab] || [];
   document.getElementById('content').innerHTML = `
     <div class="section-header">
-      <div class="section-info">
+      <div>
         <div class="section-title">${cat.emoji} ${cat.label}</div>
         <div class="section-sub">${cat.desc}</div>
       </div>
@@ -640,25 +289,25 @@ function renderContent() {
     </div>
     <div class="item-grid">
       ${items.map((item, i) => `
-        <div class="item-card" style="animation-delay:${i * 40}ms">
+        <div class="item-card" style="animation-delay:${i*40}ms">
           <div class="card-actions">
-            <button class="card-action-btn" onclick="window._openEdit(${item.id})" title="Chỉnh sửa">✎</button>
-            <button class="card-action-btn danger" onclick="window._delItem(${item.id})" title="Xoá">✕</button>
+            <button class="card-action-btn" onclick="openEdit(${item.id})" title="Sửa">✎</button>
+            <button class="card-action-btn danger" onclick="delItem(${item.id})" title="Xoá">✕</button>
           </div>
           <span class="item-emoji">${item.emoji}</span>
           <div class="item-name">${item.name}</div>
           <div class="item-desc">${item.desc}</div>
           <div class="item-price">${fmt(item.price)}<span class="item-price-unit"> đ</span></div>
-        </div>
-      `).join('')}
+        </div>`).join('')}
     </div>
-    <button class="add-btn" onclick="window._openAdd()">+ Thêm món mới vào danh mục này</button>
-  `;
+    <button class="add-btn" onclick="openAdd()">+ Thêm món mới vào danh mục này</button>`;
+
+  document.body.classList.toggle('is-owner', isOwner);
 }
 
 function setTab(id) { activeTab = id; render(); }
 
-// ── Owner auth ──
+// ── Auth ──
 function handleOwnerBtn() { isOwner ? logout() : openLogin(); }
 
 function openLogin() {
@@ -670,19 +319,19 @@ function openLogin() {
 function closeLogin() { document.getElementById('loginModal').classList.remove('open'); }
 
 function doLogin() {
-  const pw = document.getElementById('pwInput').value;
-  if (pw === OWNER_PASSWORD) {
+  if (document.getElementById('pwInput').value === OWNER_PASSWORD) {
     isOwner = true;
     closeLogin();
     document.getElementById('ownerBtnLabel').textContent = 'Đăng xuất';
     document.getElementById('ownerToggleBtn').classList.add('active');
     document.getElementById('ownerBanner').classList.add('show');
-    if (isTouchDevice()) document.body.classList.add('is-touch');
+    if (window.matchMedia('(hover: none)').matches || 'ontouchstart' in window) {
+      document.body.classList.add('is-touch');
+    }
     render();
   } else {
     document.getElementById('loginErr').style.display = 'block';
     document.getElementById('pwInput').focus();
-    document.getElementById('pwInput').select();
   }
 }
 
@@ -696,22 +345,20 @@ function logout() {
 }
 
 function togglePw() {
-  const inp = document.getElementById('pwInput');
-  inp.type = inp.type === 'password' ? 'text' : 'password';
+  const i = document.getElementById('pwInput');
+  i.type = i.type === 'password' ? 'text' : 'password';
 }
 
 // ── Item modal ──
-function populateCatSelect(val) {
-  document.getElementById('f-cat').innerHTML = CATS.map(c =>
-    `<option value="${c.id}"${c.id === val ? ' selected' : ''}>${c.emoji} ${c.label}</option>`
-  ).join('');
+function buildCatOptions(selectedId) {
+  return CATS.map(c => `<option value="${c.id}"${c.id===selectedId?' selected':''}>${c.emoji} ${c.label}</option>`).join('');
 }
 
 function openAdd() {
   if (!isOwner) return;
   editingId = null;
   document.getElementById('itemModalTitle').textContent = 'Thêm món mới';
-  populateCatSelect(activeTab);
+  document.getElementById('f-cat').innerHTML = buildCatOptions(activeTab);
   ['f-name','f-desc','f-price'].forEach(id => document.getElementById(id).value = '');
   document.getElementById('f-emoji').value = '🥤';
   document.getElementById('itemModal').classList.add('open');
@@ -722,9 +369,8 @@ function openEdit(id) {
   if (!isOwner) return;
   editingId = id;
   const item = allItems().find(i => i.id === id);
-  const cat = catOf(id);
   document.getElementById('itemModalTitle').textContent = 'Chỉnh sửa món';
-  populateCatSelect(cat);
+  document.getElementById('f-cat').innerHTML = buildCatOptions(catOf(id));
   document.getElementById('f-name').value = item.name;
   document.getElementById('f-desc').value = item.desc;
   document.getElementById('f-price').value = item.price;
@@ -744,18 +390,16 @@ async function saveItem() {
   const emoji = document.getElementById('f-emoji').value || '🥤';
   if (!name)  { alert('Vui lòng nhập tên món!'); return; }
   if (!price) { alert('Vui lòng nhập giá!'); return; }
-
   if (editingId) {
-    const oldCat = catOf(editingId);
-    menu[oldCat] = menu[oldCat].filter(i => i.id !== editingId);
-    menu[cat].push({ id: editingId, name, desc, price, emoji });
-    activeTab = cat;
+    const old = catOf(editingId);
+    menu[old] = menu[old].filter(i => i.id !== editingId);
+    menu[cat].push({ id:editingId, name, desc, price, emoji });
   } else {
-    const newId = (menu.nextId || 50);
+    const newId = menu.nextId || 50;
     menu.nextId = newId + 1;
-    menu[cat].push({ id: newId, name, desc, price, emoji });
-    activeTab = cat;
+    menu[cat].push({ id:newId, name, desc, price, emoji });
   }
+  activeTab = cat;
   closeItemModal();
   await persistMenu();
   render();
@@ -771,24 +415,12 @@ async function delItem(id) {
   render();
 }
 
-// ── Expose to inline onclick handlers ──
-window._setTab    = setTab;
-window._openAdd   = openAdd;
-window._openEdit  = openEdit;
-window._delItem   = delItem;
-window.handleOwnerBtn  = handleOwnerBtn;
-window.doLogin         = doLogin;
-window.closeLogin      = closeLogin;
-window.closeItemModal  = closeItemModal;
-window.saveItem        = saveItem;
-window.togglePw        = togglePw;
+// Modal backdrop close
+document.getElementById('loginModal').addEventListener('click', function(e) { if (e.target===this) closeLogin(); });
+document.getElementById('itemModal').addEventListener('click',  function(e) { if (e.target===this) closeItemModal(); });
+document.addEventListener('keydown', e => { if (e.key==='Escape') { closeLogin(); closeItemModal(); } });
 
-// Close modals on bg click
-document.getElementById('loginModal').addEventListener('click', function(e) { if (e.target === this) closeLogin(); });
-document.getElementById('itemModal').addEventListener('click',  function(e) { if (e.target === this) closeItemModal(); });
-document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeLogin(); closeItemModal(); } });
-
-// ── Init ──
+// ── Start ──
 initFirebase();
 </script>
 </body>
