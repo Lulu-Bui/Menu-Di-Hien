@@ -72,6 +72,11 @@
     color: var(--bg);
     border-color: var(--text);
   }
+  /* Shorten button text on small screens */
+  @media (max-width: 420px) {
+    .owner-btn { padding: 7px 10px; font-size: 12px; }
+    .logo { font-size: 17px; }
+  }
   .owner-btn .dot {
     width: 7px; height: 7px;
     border-radius: 50%;
@@ -181,6 +186,13 @@
 
   /* ── Item grid ── */
   .item-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px,1fr)); gap: 12px; }
+  @media (max-width: 480px) {
+    .item-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+    .section { padding: 0 1rem 3rem; }
+  }
+  @media (max-width: 360px) {
+    .item-grid { grid-template-columns: 1fr; }
+  }
   .item-card {
     background: var(--bg3);
     border: 0.5px solid var(--border);
@@ -189,6 +201,8 @@
     position: relative;
     transition: border-color .2s, transform .15s;
   }
+  /* On mobile owner mode, add padding-top so action buttons don't cover emoji */
+  .is-owner.is-touch .item-card { padding-top: 2.5rem; }
   .item-card:hover { border-color: var(--border2); transform: translateY(-1px); }
   .item-emoji { font-size: 26px; margin-bottom: .5rem; display: block; line-height: 1; }
   .item-name { font-weight: 600; font-size: 15px; color: var(--text); margin-bottom: 4px; }
@@ -210,22 +224,25 @@
     gap: 4px;
   }
   .is-owner .item-card:hover .card-actions { display: flex; }
+  /* On touch devices: always show actions when owner (no hover available) */
+  .is-owner.is-touch .card-actions { display: flex; }
   .card-action-btn {
-    width: 26px; height: 26px;
+    width: 32px; height: 32px;
     border-radius: 50%;
     border: 0.5px solid var(--border2);
     background: var(--bg3);
     cursor: pointer;
-    font-size: 12px;
+    font-size: 14px;
     display: flex;
     align-items: center;
     justify-content: center;
     color: var(--text2);
     transition: all .15s;
+    -webkit-tap-highlight-color: transparent;
   }
-  .card-action-btn:hover { background: var(--bg2); color: var(--text); }
+  .card-action-btn:hover, .card-action-btn:active { background: var(--bg2); color: var(--text); }
   .card-action-btn.danger { border-color: rgba(184,50,50,.3); color: var(--danger); }
-  .card-action-btn.danger:hover { background: var(--danger-bg); }
+  .card-action-btn.danger:hover, .card-action-btn.danger:active { background: var(--danger-bg); }
 
   /* Add button (owner only) */
   .add-btn {
@@ -249,6 +266,11 @@
   .add-btn:hover { background: var(--bg2); color: var(--text); border-style: solid; }
   .is-owner .add-btn { display: flex; }
 
+  /* ── Field row stacks on mobile ── */
+  @media (max-width: 400px) {
+    .field-row { grid-template-columns: 1fr; }
+  }
+
   /* ── Modal ── */
   .modal-bg {
     display: none;
@@ -256,20 +278,25 @@
     inset: 0;
     background: rgba(10,8,5,.55);
     z-index: 200;
-    align-items: center;
+    align-items: flex-end;
     justify-content: center;
     backdrop-filter: blur(2px);
   }
   .modal-bg.open { display: flex; }
+  @media (min-width: 520px) {
+    .modal-bg { align-items: center; }
+    .modal { border-radius: var(--radius) !important; width: min(420px, 92vw) !important; }
+  }
   .modal {
     background: var(--bg3);
-    border-radius: var(--radius);
+    border-radius: var(--radius) var(--radius) 0 0;
     border: 0.5px solid var(--border2);
-    padding: 1.75rem;
-    width: min(420px, 92vw);
-    max-height: 90vh;
+    padding: 1.75rem 1.5rem calc(1.75rem + env(safe-area-inset-bottom, 0px));
+    width: 100%;
+    max-height: 92vh;
     overflow-y: auto;
-    animation: modalIn .2s ease;
+    animation: modalIn .25s ease;
+    -webkit-overflow-scrolling: touch;
   }
   @keyframes modalIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
   .modal-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; }
@@ -340,10 +367,10 @@
 
 <!-- Header -->
 <header>
-  <div class="logo">Quán <span>Ngon</span></div>
+  <div class="logo">Anh <span>Duong<span> Menu</span></div>
   <button class="owner-btn" id="ownerToggleBtn" onclick="handleOwnerBtn()">
     <div class="dot"></div>
-    <span id="ownerBtnLabel">Đăng nhập chủ quán</span>
+    <span id="ownerBtnLabel">Chủ quán</span>
   </button>
 </header>
 
@@ -370,7 +397,7 @@
 <!-- Footer -->
 <footer>
   <div>☕ 🫐 🍊</div>
-  <div>Quán Ngon · Mở cửa 7:00 – 22:00 hàng ngày</div>
+  <div>Anh Duong · SDT: 0919 258 801 </div>
   <div style="margin-top:4px;font-size:11px;">© 2025 Quán Ngon. All rights reserved.</div>
 </footer>
 
@@ -395,7 +422,6 @@
       <button class="btn-secondary" onclick="closeLogin()">Huỷ</button>
       <button class="btn-primary" onclick="doLogin()">Đăng nhập →</button>
     </div>
-    <div class="login-hint">Mật khẩu mặc định: <strong>owner123</strong><br>Đổi trong file HTML dòng <code>OWNER_PASSWORD</code></div>
   </div>
 </div>
 
@@ -436,8 +462,12 @@
 </div>
 
 <script>
+// ── Touch device detection ──
+const isTouchDevice = () => window.matchMedia('(hover: none)').matches || 'ontouchstart' in window;
+if (isTouchDevice()) document.body.classList.add('is-touch');
+
 // ── CONFIG: Change your password here ──
-const OWNER_PASSWORD = 'owner123';
+const OWNER_PASSWORD = '23012021';
 
 // ── State ──
 let isOwner = false;
@@ -553,9 +583,11 @@ function doLogin() {
   if (pw === OWNER_PASSWORD) {
     isOwner = true;
     closeLogin();
-    document.getElementById('ownerBtnLabel').textContent = 'Đăng xuất';
+    const short = window.innerWidth < 420;
+    document.getElementById('ownerBtnLabel').textContent = short ? 'Đăng xuất' : 'Đăng xuất';
     document.getElementById('ownerToggleBtn').classList.add('active');
     document.getElementById('ownerBanner').classList.add('show');
+    if (isTouchDevice()) document.body.classList.add('is-touch');
     render();
   } else {
     document.getElementById('loginErr').style.display = 'block';
@@ -567,7 +599,7 @@ function doLogin() {
 function logout() {
   if (!confirm('Đăng xuất chế độ chủ quán?')) return;
   isOwner = false;
-  document.getElementById('ownerBtnLabel').textContent = 'Đăng nhập chủ quán';
+  document.getElementById('ownerBtnLabel').textContent = 'Chủ quán';
   document.getElementById('ownerToggleBtn').classList.remove('active');
   document.getElementById('ownerBanner').classList.remove('show');
   render();
